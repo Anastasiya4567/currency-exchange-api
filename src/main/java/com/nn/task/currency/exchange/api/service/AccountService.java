@@ -3,6 +3,7 @@ package com.nn.task.currency.exchange.api.service;
 import com.nn.task.currency.exchange.api.domain.model.AccountCreationDetails;
 import com.nn.task.currency.exchange.api.domain.model.AccountDetails;
 import com.nn.task.currency.exchange.api.entity.Account;
+import com.nn.task.currency.exchange.api.exception.AccountNotFoundException;
 import com.nn.task.currency.exchange.api.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class AccountService {
 
     private Account findAccountOrThrow(UUID id) {
         return accountRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Account not found"));
+            .orElseThrow(AccountNotFoundException::new);
     }
 
     private AccountDetails toDomain(Account account) {

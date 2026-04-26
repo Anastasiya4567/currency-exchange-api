@@ -1,10 +1,13 @@
-openapi: 3.0.1
+openapi: 3.0.3
+
 info:
   title: Currency Exchange API
   version: 1.0.0
   description: API for managing accounts and currency exchange.
+
 servers:
   - url: /
+
 paths:
   /accounts:
     post:
@@ -21,7 +24,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountInfoResponse'
+                $ref: '#/components/schemas/AccountDetailsResponse'
   /accounts/{id}:
     get:
       summary: Get account information
@@ -38,7 +41,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountInfoResponse'
+                $ref: '#/components/schemas/AccountDetailsResponse'
   /accounts/{id}/exchange:
     post:
       summary: Exchange currency for an account
@@ -61,7 +64,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountInfoResponse'
+                $ref: '#/components/schemas/AccountDetailsResponse'
+
 components:
   schemas:
     CreateAccountRequest:
@@ -90,7 +94,7 @@ components:
         amount:
           type: number
           format: double
-    AccountInfoResponse:
+    AccountDetailsResponse:
       type: object
       required:
         - id

@@ -1,12 +1,13 @@
-package com.nn.task.currency.exchange.api.dto;
+package com.nn.task.currency.exchange.api.domain.model;
 
-import java.util.UUID;
 import java.math.BigDecimal;
+import java.util.UUID;
 
-public record AccountInfoResponse(
+public record AccountDetails(
     UUID id,
     String firstName,
     String lastName,
     BigDecimal balancePLN,
     BigDecimal balanceUSD
-) {}
+) {
+}

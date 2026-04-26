@@ -9,7 +9,7 @@ A Spring Boot REST API for creating currency accounts and exchanging PLN <-> USD
 - Data persists after restart (H2 file database)
 
 ## Requirements
-- Java 21
+- Java 25
 - Maven
 
 ## How to Run

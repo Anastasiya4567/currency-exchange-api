@@ -10,6 +10,7 @@ A Spring Boot REST API for creating currency accounts and exchanging PLN <-> USD
 
 ## Requirements
 - Java 25
+- Spring Boot
 - Maven
 
 ## How to Run
@@ -39,7 +40,7 @@ POST /accounts
 {
   "firstName": "John",
   "lastName": "Doe",
-  "initialBalancePLN": 1000.0
+  "initialBalancePLN": "1000.00"
 }
 ```
 
@@ -48,7 +49,7 @@ POST /accounts
 POST /accounts/{id}/exchange
 {
   "fromCurrency": "PLN",
-  "amount": 100.0
+  "amount": "100.00"
 }
 ```
 
@@ -57,7 +58,7 @@ POST /accounts/{id}/exchange
 POST /accounts/{id}/exchange
 {
   "fromCurrency": "USD",
-  "amount": 10.0
+  "amount": "10.00"
 }
 ```
 
@@ -71,8 +72,11 @@ GET /accounts/{id}
 - JDBC URL: `jdbc:h2:file:./data/currencydb`
 
 ## Notes
+- All monetary values in requests/responses must be JSON strings (e.g., "100.00"), not numbers.
 - Exchange rates are fetched live from [NBP API](http://api.nbp.pl/)
 - Data is stored in a file-based H2 database (`./data/currencydb`)
+- All dependency versions are managed in `pom.xml` properties for easy upgrades.
+- The build automatically removes unwanted OpenAPI-generated test files to prevent test errors.
 
 ---
 

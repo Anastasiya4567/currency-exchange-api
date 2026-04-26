@@ -1,0 +1,114 @@
+openapi: 3.0.1
+info:
+  title: Currency Exchange API
+  version: 1.0.0
+  description: API for managing accounts and currency exchange.
+servers:
+  - url: /
+paths:
+  /accounts:
+    post:
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRequest'
+      responses:
+        '200':
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfoResponse'
+  /accounts/{id}:
+    get:
+      summary: Get account information
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Account info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfoResponse'
+  /accounts/{id}/exchange:
+    post:
+      summary: Exchange currency for an account
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeRequest'
+      responses:
+        '200':
+          description: Exchange completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountInfoResponse'
+components:
+  schemas:
+    CreateAccountRequest:
+      type: object
+      required:
+        - firstName
+        - lastName
+        - initialBalancePLN
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        initialBalancePLN:
+          type: number
+          format: double
+    ExchangeRequest:
+      type: object
+      required:
+        - fromCurrency
+        - amount
+      properties:
+        fromCurrency:
+          type: string
+          description: '"PLN" or "USD"'
+        amount:
+          type: number
+          format: double
+    AccountInfoResponse:
+      type: object
+      required:
+        - id
+        - firstName
+        - lastName
+        - balancePLN
+        - balanceUSD
+      properties:
+        id:
+          type: string
+          format: uuid
+        firstName:
+          type: string
+        lastName:
+          type: string
+        balancePLN:
+          type: number
+          format: double
+        balanceUSD:
+          type: number
+          format: double

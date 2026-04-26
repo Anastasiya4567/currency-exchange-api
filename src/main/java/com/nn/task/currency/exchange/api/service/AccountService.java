@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -15,24 +16,29 @@ public class AccountService {
     private final AccountRepository accountRepository;
 
     public AccountInfoResponse createAccount(CreateAccountRequest request) {
-        Account account = Account.builder()
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .balancePLN(request.getInitialBalancePLN())
+        var account = Account.builder()
+                .firstName(request.firstName())
+                .lastName(request.lastName())
+                .balancePLN(request.initialBalancePLN())
                 .balanceUSD(BigDecimal.ZERO)
                 .build();
         account = accountRepository.save(account);
         return toResponse(account);
     }
 
+    public AccountInfoResponse getAccount(UUID id) {
+        var account = accountRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Account not found"));
+        return toResponse(account);
+    }
+
     private AccountInfoResponse toResponse(Account account) {
-        AccountInfoResponse response = new AccountInfoResponse();
-        response.setId(account.getId());
-        response.setFirstName(account.getFirstName());
-        response.setLastName(account.getLastName());
-        response.setBalancePLN(account.getBalancePLN());
-        response.setBalanceUSD(account.getBalanceUSD());
-        return response;
+        return new AccountInfoResponse(
+                account.getId(),
+                account.getFirstName(),
+                account.getLastName(),
+                account.getBalancePLN(),
+                account.getBalanceUSD()
+        );
     }
 }
-

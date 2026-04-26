@@ -1,9 +1,12 @@
 package com.nn.task.currency.exchange.api.controller;
 
+import com.nn.task.currency.exchange.api.domain.model.AccountDetails;
 import com.nn.task.currency.exchange.api.mapper.AccountDetailsMapper;
 import com.nn.task.currency.exchange.api.openapi.model.AccountDetailsResponse;
 import com.nn.task.currency.exchange.api.openapi.model.CreateAccountRequest;
+import com.nn.task.currency.exchange.api.openapi.model.ExchangeRequest;
 import com.nn.task.currency.exchange.api.service.AccountService;
+import com.nn.task.currency.exchange.api.service.CurrencyExchangeService;
 import lombok.RequiredArgsConstructor;
 import org.openapitools.api.AccountsApi;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +21,7 @@ import java.util.UUID;
 public class AccountController implements AccountsApi {
     private final AccountService accountService;
     private final AccountDetailsMapper accountDetailsMapper;
+    private final CurrencyExchangeService currencyExchangeService;
 
     @Override
     public ResponseEntity<AccountDetailsResponse> accountsPost(@RequestBody CreateAccountRequest request) {
@@ -29,5 +33,11 @@ public class AccountController implements AccountsApi {
     public ResponseEntity<AccountDetailsResponse> accountsIdGet(@PathVariable UUID id) {
         var account = accountService.getAccount(id);
         return ResponseEntity.ok(accountDetailsMapper.toAccountDetailsResponse(account));
+    }
+
+    @Override
+    public ResponseEntity<AccountDetailsResponse> exchangeCurrency(UUID id, ExchangeRequest exchangeRequest) {
+        var updatedAccount = currencyExchangeService.exchangeCurrency(id, exchangeRequest);
+        return ResponseEntity.ok(accountDetailsMapper.toAccountDetailsResponse(updatedAccount));
     }
 }

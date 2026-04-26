@@ -27,9 +27,21 @@ public class AccountService {
     }
 
     public AccountDetails getAccount(UUID id) {
-        var account = accountRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Account not found"));
+        var account = findAccountOrThrow(id);
         return toDomain(account);
+    }
+
+    public AccountDetails updateBalances(UUID id, BigDecimal newPLN, BigDecimal newUSD) {
+        var account = findAccountOrThrow(id);
+        account.setBalancePLN(newPLN);
+        account.setBalanceUSD(newUSD);
+        account = accountRepository.save(account);
+        return toDomain(account);
+    }
+
+    private Account findAccountOrThrow(UUID id) {
+        return accountRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Account not found"));
     }
 
     private AccountDetails toDomain(Account account) {

@@ -44,6 +44,7 @@ paths:
                 $ref: '#/components/schemas/AccountDetailsResponse'
   /accounts/{id}/exchange:
     post:
+      operationId: exchangeCurrency
       summary: Exchange currency for an account
       parameters:
         - in: path
@@ -86,11 +87,15 @@ components:
       type: object
       required:
         - fromCurrency
+        - toCurrency
         - amount
       properties:
         fromCurrency:
           type: string
           description: '"PLN" or "USD"'
+        toCurrency:
+          type: string
+          description: 'Target currency (e.g., "PLN" or "USD")'
         amount:
           type: number
           format: double

@@ -9,7 +9,7 @@ A Spring Boot REST API for creating currency accounts and exchanging PLN <-> USD
 - Data persists after restart (H2 file database)
 
 ## Requirements
-- Java 25
+- Java 21
 - Spring Boot
 - Maven
 
@@ -49,6 +49,7 @@ POST /accounts
 POST /accounts/{id}/exchange
 {
   "fromCurrency": "PLN",
+  "toCurrency": "USD",
   "amount": "100.00"
 }
 ```
@@ -58,6 +59,7 @@ POST /accounts/{id}/exchange
 POST /accounts/{id}/exchange
 {
   "fromCurrency": "USD",
+  "toCurrency": "PLN",
   "amount": "10.00"
 }
 ```

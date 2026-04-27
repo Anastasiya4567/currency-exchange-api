@@ -1,0 +1,11 @@
+{
+  "title": "Currency Exchange API",
+  "library": "spring-boot",
+  "openApiNullable": false,
+  "generateModelTests": false,
+  "generateApiTests": false,
+  "generateSupportingFiles": false,
+  "useSpringBoot3": true,
+  "generateApiDocumentation": false,
+  "generateModelDocumentation": false
+}

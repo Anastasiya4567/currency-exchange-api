@@ -21,7 +21,7 @@ public class AccountService {
 
     public AccountDetails createAccount(AccountCreationDetails request) {
         if (request.initialBalancePLN() == null || request.initialBalancePLN().compareTo(BigDecimal.ZERO) <= 0) {
-            throw new NegativeAmountException("Initial balance must be positive");
+            throw new NegativeAmountException();
         }
         var account = Account.builder()
             .firstName(request.firstName())

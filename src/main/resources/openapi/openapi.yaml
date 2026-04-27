@@ -12,6 +12,7 @@ paths:
   /accounts:
     post:
       summary: Create a new account
+      operationId: createAccount
       requestBody:
         required: true
         content:
@@ -43,6 +44,7 @@ paths:
   /accounts/{id}:
     get:
       summary: Get account information
+      operationId: getAccount
       parameters:
         - in: path
           name: id
@@ -77,8 +79,8 @@ paths:
                 message: "An unexpected error occurred."
   /accounts/{id}/exchange:
     post:
-      operationId: exchangeCurrency
       summary: Exchange currency for an account
+      operationId: exchangeCurrency
       parameters:
         - in: path
           name: id

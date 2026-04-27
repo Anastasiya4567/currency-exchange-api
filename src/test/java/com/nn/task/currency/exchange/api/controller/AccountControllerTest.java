@@ -54,7 +54,7 @@ class AccountControllerTest {
         when(accountDetailsMapper.toAccountDetailsResponse(accountDetails)).thenReturn(response);
 
         // when
-        var result = accountController.accountsPost(request);
+        var result = accountController.createAccount(request);
 
         // then
         assertNotNull(result);
@@ -71,7 +71,7 @@ class AccountControllerTest {
         when(accountDetailsMapper.toAccountDetailsResponse(accountDetails)).thenReturn(response);
 
         // when
-        var result = accountController.accountsIdGet(id);
+        var result = accountController.getAccount(id);
 
         // then
         assertNotNull(result);

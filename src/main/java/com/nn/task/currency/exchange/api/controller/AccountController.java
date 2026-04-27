@@ -24,13 +24,13 @@ public class AccountController implements AccountsApi {
     private final CurrencyExchangeService currencyExchangeService;
 
     @Override
-    public ResponseEntity<AccountDetailsResponse> accountsPost(@Valid @RequestBody CreateAccountRequest request) {
+    public ResponseEntity<AccountDetailsResponse> createAccount(@Valid @RequestBody CreateAccountRequest request) {
         var account = accountService.createAccount(accountDetailsMapper.toAccountCreationDetails(request));
         return ResponseEntity.ok(accountDetailsMapper.toAccountDetailsResponse(account));
     }
 
     @Override
-    public ResponseEntity<AccountDetailsResponse> accountsIdGet(@PathVariable UUID id) {
+    public ResponseEntity<AccountDetailsResponse> getAccount(@PathVariable UUID id) {
         var account = accountService.getAccount(id);
         return ResponseEntity.ok(accountDetailsMapper.toAccountDetailsResponse(account));
     }

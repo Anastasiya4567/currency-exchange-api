@@ -73,13 +73,20 @@ GET /accounts/{id}
 - Access at [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 - JDBC URL: `jdbc:h2:file:./data/currencydb`
 
+## Running Tests
+Run all unit and integration tests:
+```sh
+mvn test
+```
+
+## Project Structure
+- src/main/java: Application source code
+- src/test/java: Unit and integration tests
+- src/main/resources/openapi: OpenAPI spec and config
+
 ## Notes
 - All monetary values in requests/responses must be JSON strings (e.g., "100.00"), not numbers.
 - Exchange rates are fetched live from [NBP API](http://api.nbp.pl/)
 - Data is stored in a file-based H2 database (`./data/currencydb`)
 - All dependency versions are managed in `pom.xml` properties for easy upgrades.
 - The build automatically removes unwanted OpenAPI-generated test files to prevent test errors.
-
----
-
-For any questions, contact via email.

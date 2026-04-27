@@ -3,6 +3,7 @@ package com.nn.task.currency.exchange.api.client;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Setter
@@ -18,8 +19,7 @@ public class NbpRateResponse {
     public static class Rate {
         private String no;
         private String effectiveDate;
-        private double mid;
+        private BigDecimal mid;
 
     }
 }
-

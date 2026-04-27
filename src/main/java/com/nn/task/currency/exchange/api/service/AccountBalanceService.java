@@ -7,27 +7,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.function.BiConsumer;
 
-import static com.nn.task.currency.exchange.api.domain.model.Currency.PLN;
-import static com.nn.task.currency.exchange.api.domain.model.Currency.USD;
+import static com.nn.task.currency.exchange.api.constants.AccountBalanceConstants.BALANCE_GETTERS;
+import static com.nn.task.currency.exchange.api.constants.AccountBalanceConstants.BALANCE_SETTERS;
 
 @Service
 @RequiredArgsConstructor
 public class AccountBalanceService {
 
     private final CurrencyConversionService conversionService;
-
-    private static final Map<String, java.util.function.Function<Account, BigDecimal>> BALANCE_GETTERS = Map.of(
-        PLN.name(), Account::getBalancePLN,
-        USD.name(), Account::getBalanceUSD
-    );
-
-    private static final Map<String, BiConsumer<Account, BigDecimal>> BALANCE_SETTERS = Map.of(
-        PLN.name(), Account::setBalancePLN,
-        USD.name(), Account::setBalanceUSD
-    );
 
     public AccountBalances calculateNewBalances(Account account, String fromCurrency, String toCurrency, BigDecimal amount) {
         var fromCurrencyBalance = getBalance(account, fromCurrency);
@@ -38,17 +26,17 @@ public class AccountBalanceService {
         return new AccountBalances(fromCurrency, fromCurrencyBalance, toCurrency, toCurrencyBalance);
     }
 
-    public void setAccountBalances(Account account, AccountBalances balances) {
-        setBalance(account, balances.fromCurrency(), balances.fromBalance());
-        setBalance(account, balances.toCurrency(), balances.toBalance());
-    }
-
     private BigDecimal getBalance(Account account, String currency) {
         var balanceGetter = BALANCE_GETTERS.get(currency.toUpperCase());
         if (balanceGetter == null) {
             throw new UnsupportedCurrencyException(currency);
         }
         return balanceGetter.apply(account);
+    }
+
+    public void setAccountBalances(Account account, AccountBalances balances) {
+        setBalance(account, balances.fromCurrency(), balances.fromBalance());
+        setBalance(account, balances.toCurrency(), balances.toBalance());
     }
 
     private void setBalance(Account account, String currency, BigDecimal value) {

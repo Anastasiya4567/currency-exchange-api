@@ -1,6 +1,6 @@
 package com.nn.task.currency.exchange.api.service;
 
-import com.nn.task.currency.exchange.api.client.NbpClient;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,14 +14,11 @@ import static com.nn.task.currency.exchange.api.domain.model.Currency.PLN;
 import static com.nn.task.currency.exchange.api.domain.model.Currency.USD;
 
 @Service
+@RequiredArgsConstructor
 public class CurrencyConversionService {
     private static final Logger log = LoggerFactory.getLogger(CurrencyConversionService.class);
 
-    private final NbpClient nbpClient;
-
-    public CurrencyConversionService(NbpClient nbpClient) {
-        this.nbpClient = nbpClient;
-    }
+    private final ExchangeRateService exchangeRateService;
 
     private static final Map<String, BiFunction<BigDecimal, CurrencyConversionService, BigDecimal>> CONVERSION_MAP = Map.of(
         PLN.name() + "->" + USD.name(),
@@ -31,29 +28,40 @@ public class CurrencyConversionService {
     );
 
     public BigDecimal exchange(BigDecimal amount, String fromCurrency, String toCurrency) {
-        if (fromCurrency.equalsIgnoreCase(toCurrency)) {
+        if (isSameCurrency(fromCurrency, toCurrency)) {
             return amount;
         }
-        String key = fromCurrency.toUpperCase() + "->" + toCurrency.toUpperCase();
+        var key = getConversionKey(fromCurrency, toCurrency);
         try {
-            var converter = CONVERSION_MAP.get(key);
-            if (converter != null) {
-                return converter.apply(amount, this);
-            }
+            return convertAmount(amount, key);
         } catch (Exception e) {
             log.warn("Currency conversion failed, falling back to 1:1 rate: {} -> {}", fromCurrency, toCurrency, e);
             return amount;
         }
-        log.warn("Currency conversion not supported for pair: {} -> {}. Falling back to 1:1 rate.", fromCurrency, toCurrency);
+    }
+
+    private boolean isSameCurrency(String fromCurrency, String toCurrency) {
+        return fromCurrency.equalsIgnoreCase(toCurrency);
+    }
+
+    private String getConversionKey(String fromCurrency, String toCurrency) {
+        return fromCurrency.toUpperCase() + "->" + toCurrency.toUpperCase();
+    }
+
+    private BigDecimal convertAmount(BigDecimal amount, String key) {
+        var converter = CONVERSION_MAP.get(key);
+        if (converter != null) {
+            return converter.apply(amount, this);
+        }
+        log.warn("Currency conversion not supported for pair: {}. Falling back to 1:1 rate.", key);
         return amount;
     }
 
     public BigDecimal getUsdPlnRate() {
         try {
-            var response = nbpClient.getUsdPlnRate();
+            var response = exchangeRateService.getUsdPlnRate();
             if (response != null && response.getRates() != null && !response.getRates().isEmpty()) {
-                double mid = response.getRates().getFirst().getMid();
-                return BigDecimal.valueOf(mid);
+                return response.getRates().getFirst().getMid();
             }
         } catch (Exception e) {
             log.warn("Failed to fetch USD/PLN rate from NBP API, falling back to 1.0", e);

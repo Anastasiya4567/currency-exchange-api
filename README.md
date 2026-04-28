@@ -12,6 +12,8 @@ A Spring Boot REST API for creating currency accounts and exchanging PLN <-> USD
 - Java 21
 - Spring Boot
 - Maven
+- H2 Database
+- OpenAPI Generator
 
 ## How to Run
 

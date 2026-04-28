@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ExchangeValidatorTest {
     private static final BigDecimal INSUFFICIENT_AMOUNT = new BigDecimal("1000.00");
-    private static final String NEGATIVE_AMOUNT = "-10.00";
 
     private ExchangeValidator validator;
     private Account account;

@@ -11,6 +11,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 
 import java.math.BigDecimal;
 
@@ -54,27 +55,19 @@ public class AccountControllerIntegrationTest {
     @Test
     void shouldReturnBadRequestForNegativeBalanceOnCreate() throws Exception {
         // given
-        var request = new CreateAccountRequest(FIRST_NAME, LAST_NAME, "-100.00");
+        var request = new CreateAccountRequest(FIRST_NAME, LAST_NAME, NEGATIVE_AMOUNT);
 
         // when / then
-        mockMvc.perform(post(PATH_ACCOUNTS)
+        assertErrorResponse(mockMvc.perform(post(PATH_ACCOUNTS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code").exists())
-            .andExpect(jsonPath("$.message").exists());
+            .andExpect(status().isBadRequest()));
     }
 
     @Test
     void shouldGetAccountSuccessfully() throws Exception {
         // given
-        var request = new CreateAccountRequest(FIRST_NAME, LAST_NAME, BALANCE);
-        String response = mockMvc.perform(post(PATH_ACCOUNTS)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsString();
-        String id = objectMapper.readTree(response).get("id").asText();
+        String id = createAccountAndGetId(BALANCE);
 
         // when
         var resultActions = mockMvc.perform(get(PATH_ACCOUNTS + "/" + id));
@@ -94,22 +87,14 @@ public class AccountControllerIntegrationTest {
         var nonExistingId = "123e4567-e89b-12d3-a456-426614174000";
 
         // when / then
-        mockMvc.perform(get(PATH_ACCOUNTS + "/" + nonExistingId))
-            .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.code").exists())
-            .andExpect(jsonPath("$.message").exists());
+        assertErrorResponse(mockMvc.perform(get(PATH_ACCOUNTS + "/" + nonExistingId))
+            .andExpect(status().isBadRequest()));
     }
 
     @Test
     void shouldExchangeCurrencySuccessfully() throws Exception {
         // given
-        var request = new CreateAccountRequest(FIRST_NAME, LAST_NAME, BALANCE);
-        String response = mockMvc.perform(post(PATH_ACCOUNTS)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isOk())
-            .andReturn().getResponse().getContentAsString();
-        String id = objectMapper.readTree(response).get("id").asText();
+        String id = createAccountAndGetId(BALANCE);
 
         // when
         var exchangeRequest = new ExchangeRequest(PLN.name(), USD.name(), AMOUNT_10);
@@ -130,20 +115,28 @@ public class AccountControllerIntegrationTest {
     @Test
     void shouldReturnBadRequestForInsufficientBalanceOnExchange() throws Exception {
         // given
-        var request = new CreateAccountRequest(FIRST_NAME, LAST_NAME, AMOUNT_5);
-        String response = mockMvc.perform(post(PATH_ACCOUNTS)
+        String id = createAccountAndGetId(AMOUNT_5);
+
+        // when / then
+        var exchangeRequest = new ExchangeRequest(PLN.name(), USD.name(), AMOUNT_10);
+        assertErrorResponse(mockMvc.perform(post(PATH_ACCOUNTS + "/" + id + "/exchange")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(exchangeRequest)))
+            .andExpect(status().isBadRequest()));
+    }
+
+    private String createAccountAndGetId(String balance) throws Exception {
+        var request = new CreateAccountRequest(FIRST_NAME, LAST_NAME, balance);
+        var response = mockMvc.perform(post(PATH_ACCOUNTS)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isOk())
             .andReturn().getResponse().getContentAsString();
-        String id = objectMapper.readTree(response).get("id").asText();
+        return objectMapper.readTree(response).get("id").asText();
+    }
 
-        // when / then
-        var exchangeRequest = new ExchangeRequest(PLN.name(), USD.name(), AMOUNT_10);
-        mockMvc.perform(post(PATH_ACCOUNTS + "/" + id + "/exchange")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(exchangeRequest)))
-            .andExpect(status().isBadRequest())
+    private void assertErrorResponse(ResultActions resultActions) throws Exception {
+        resultActions
             .andExpect(jsonPath("$.code").exists())
             .andExpect(jsonPath("$.message").exists());
     }

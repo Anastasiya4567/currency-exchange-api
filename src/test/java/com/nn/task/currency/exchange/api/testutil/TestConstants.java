@@ -16,4 +16,5 @@ public final class TestConstants {
     public static final String RATE_4 = "4.00";
     public static final String RATE_4_2 = "4.20";
     public static final String EUR = "EUR";
+    public static final String NEGATIVE_AMOUNT = "-10.00";
 }

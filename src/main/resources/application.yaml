@@ -11,9 +11,6 @@ spring:
     hibernate:
       ddl-auto: update
     open-in-view: false
-  h2:
-    console:
-      enabled: false
 
 springdoc:
   api-docs:
@@ -24,3 +21,7 @@ springdoc:
 logging:
   level:
     org.springframework: INFO
+
+nbp:
+  api:
+    url: http://api.nbp.pl/api

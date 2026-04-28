@@ -13,7 +13,7 @@ A Spring Boot REST API for creating currency accounts and exchanging PLN <-> USD
 - Spring Boot
 - Maven
 - H2 Database
-- OpenAPI Generator
+- Swagger/OpenAPI for API documentation
 
 ## How to Run
 
@@ -74,6 +74,16 @@ GET /accounts/{id}
 ## H2 Console
 - Access at [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
 - JDBC URL: `jdbc:h2:file:./data/currencydb`
+
+## Swagger UI / OpenAPI Docs
+
+After starting the application, you can explore and test the API using Swagger UI:
+
+- [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
+The OpenAPI (Swagger) specification is also available at:
+- [http://localhost:8080/v3/api-docs](http://localhost:8080/v3/api-docs)
 
 ## Running Tests
 Run all unit and integration tests:

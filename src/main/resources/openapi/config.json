@@ -7,5 +7,6 @@
   "generateSupportingFiles": false,
   "useSpringBoot3": true,
   "generateApiDocumentation": false,
-  "generateModelDocumentation": false
+  "generateModelDocumentation": false,
+  "interfaceOnly": true
 }

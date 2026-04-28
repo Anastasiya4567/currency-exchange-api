@@ -1,6 +1,7 @@
 package com.nn.task.currency.exchange.api.service;
 
 import com.nn.task.currency.exchange.api.entity.Account;
+import com.nn.task.currency.exchange.api.exception.InsufficientFundsException;
 import com.nn.task.currency.exchange.api.exception.NegativeAmountException;
 import com.nn.task.currency.exchange.api.exception.UnsupportedCurrencyException;
 import com.nn.task.currency.exchange.api.openapi.model.ExchangeRequest;
@@ -10,7 +11,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 
 import static com.nn.task.currency.exchange.api.testutil.TestConstants.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ExchangeValidatorTest {
     private static final BigDecimal INSUFFICIENT_AMOUNT = new BigDecimal("1000.00");
@@ -23,11 +25,11 @@ class ExchangeValidatorTest {
     void setUp() {
         validator = new ExchangeValidator();
         account = Account.builder()
-                .firstName(FIRST_NAME)
-                .lastName(LAST_NAME)
-                .balancePLN(new BigDecimal(BALANCE_PLN))
-                .balanceUSD(new BigDecimal(BALANCE_USD))
-                .build();
+            .firstName(FIRST_NAME)
+            .lastName(LAST_NAME)
+            .balancePLN(new BigDecimal(BALANCE_PLN))
+            .balanceUSD(new BigDecimal(BALANCE_USD))
+            .build();
     }
 
     @Test
@@ -60,7 +62,7 @@ class ExchangeValidatorTest {
         exchangeRequest.setAmount(INSUFFICIENT_AMOUNT.toPlainString());
 
         // when / then
-        assertThrows(IllegalArgumentException.class, () -> validator.validateAll(account, exchangeRequest));
+        assertThrows(InsufficientFundsException.class, () -> validator.validateAll(account, exchangeRequest));
     }
 
     @Test
@@ -93,7 +95,7 @@ class ExchangeValidatorTest {
         exchangeRequest.setAmount(INSUFFICIENT_AMOUNT.toPlainString());
 
         // when / then
-        assertThrows(IllegalArgumentException.class, () -> validator.validateAll(account, exchangeRequest));
+        assertThrows(InsufficientFundsException.class, () -> validator.validateAll(account, exchangeRequest));
     }
 
     @Test

@@ -1,6 +1,7 @@
 package com.nn.task.currency.exchange.api.controller.advice;
 
 import com.nn.task.currency.exchange.api.exception.AccountNotFoundException;
+import com.nn.task.currency.exchange.api.exception.InsufficientFundsException;
 import com.nn.task.currency.exchange.api.exception.NegativeAmountException;
 import com.nn.task.currency.exchange.api.exception.UnsupportedCurrencyException;
 import org.slf4j.Logger;
@@ -34,6 +35,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NegativeAmountException.class)
     public ResponseEntity<ApiError> handleNegativeAmount(NegativeAmountException ex) {
         return buildErrorResponse("NEGATIVE_AMOUNT", ex.getMessage(), HttpStatus.BAD_REQUEST, LogLevel.WARN, ex);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ApiError> handleIllegalArgument(IllegalArgumentException ex) {
+        return buildErrorResponse("INSUFFICIENT_FUNDS", ex.getMessage(), HttpStatus.BAD_REQUEST, LogLevel.WARN, ex);
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<ApiError> handleInsufficientFunds(InsufficientFundsException ex) {
+        return buildErrorResponse("INSUFFICIENT_FUNDS", ex.getMessage(), HttpStatus.BAD_REQUEST, LogLevel.WARN, ex);
     }
 
     private enum LogLevel {ERROR, WARN}

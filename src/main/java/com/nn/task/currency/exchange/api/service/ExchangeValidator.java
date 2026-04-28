@@ -1,8 +1,9 @@
 package com.nn.task.currency.exchange.api.service;
 
 import com.nn.task.currency.exchange.api.entity.Account;
-import com.nn.task.currency.exchange.api.exception.UnsupportedCurrencyException;
+import com.nn.task.currency.exchange.api.exception.InsufficientFundsException;
 import com.nn.task.currency.exchange.api.exception.NegativeAmountException;
+import com.nn.task.currency.exchange.api.exception.UnsupportedCurrencyException;
 import com.nn.task.currency.exchange.api.openapi.model.ExchangeRequest;
 import org.springframework.stereotype.Component;
 
@@ -26,11 +27,11 @@ public class ExchangeValidator {
     private void validateSufficientBalance(Account account, String fromCurrency, BigDecimal amount) {
         if (PLN.name().equalsIgnoreCase(fromCurrency)) {
             if (account.getBalancePLN().compareTo(amount) < 0) {
-                throw new IllegalArgumentException("Insufficient PLN balance");
+                throw new InsufficientFundsException(PLN.name());
             }
         } else if (USD.name().equalsIgnoreCase(fromCurrency)) {
             if (account.getBalanceUSD().compareTo(amount) < 0) {
-                throw new IllegalArgumentException("Insufficient USD balance");
+                throw new InsufficientFundsException(USD.name());
             }
         } else {
             throw new UnsupportedCurrencyException(fromCurrency);
